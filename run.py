@@ -11,6 +11,22 @@ import pandas as pd
 from model import Citizen, SocietyModel
 
 
+MORAL_BIAS_ALIASES = {
+    "highdark": "high_dark",
+    "high_dark": "high_dark",
+    "lowdark": "low_dark",
+    "low_dark": "low_dark",
+    "highprosocial": "high_prosocial",
+    "high_prosocial": "high_prosocial",
+}
+
+
+def normalize_moral_bias(value):
+    if value is None:
+        return None
+    return MORAL_BIAS_ALIASES.get(str(value).strip().lower(), value)
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Run a Neuro-Societies simulation")
     parser.add_argument("--steps", type=int, default=200)
@@ -29,7 +45,8 @@ def parse_args():
     parser.add_argument("--spectrumlevel", "--spectrum_level", dest="spectrum_level", type=int,
                         choices=[1, 2, 3], default=None)
     parser.add_argument("--initialmoralbias", "--initial_moral_bias", dest="initial_moral_bias",
-                        choices=["highdark", "lowdark", "highprosocial"], default=None)
+                        choices=["highdark", "lowdark", "highprosocial", "high_dark", "low_dark", "high_prosocial"],
+                        default=None)
     parser.add_argument("--resiliencebias", "--resilience_bias", dest="resilience_bias",
                         choices=["high", "low"], default=None)
     parser.add_argument("--emotionalbias", "--emotional_bias", dest="emotional_bias",
@@ -64,7 +81,9 @@ def parse_args():
     parser.add_argument("--fermibeta", "--fermi_beta", dest="fermi_beta", type=float, default=1.0)
 
     parser.add_argument("--policymode", "--policy_mode", dest="policy_mode", default="none")
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.initial_moral_bias = normalize_moral_bias(args.initial_moral_bias)
+    return args
 
 
 def topology_params_from_args(args):
