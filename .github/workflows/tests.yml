@@ -29,12 +29,15 @@ jobs:
     
     - name: Run verification script
       run: |
-        python verify.py
+        python verify.py > verify_output.log 2>&1 || (tail -200 verify_output.log && exit 1)
+        cat verify_output.log
     
     - name: Run basic tests
       run: |
-        python tests/test_basic.py
+        python tests/test_basic.py > test_output.log 2>&1 || (tail -200 test_output.log && exit 1)
+        cat test_output.log
     
     - name: Run quick simulation
       run: |
-        python run.py --steps 5 --populationscale tiny
+        python run.py --steps 5 --populationscale tiny > simulation_output.log 2>&1 || (tail -200 simulation_output.log && exit 1)
+        cat simulation_output.log
