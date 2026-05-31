@@ -10,8 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
 
     steps:
     - uses: actions/checkout@v3
@@ -28,12 +29,49 @@ jobs:
     
     - name: Run verification script
       run: |
-        python verify.py
+        python verify.py > verify_output.log 2>&1 || (tail -200 verify_output.log && exit 1)
+        cat verify_output.log
     
     - name: Run basic tests
       run: |
-        python tests/test_basic.py
+        python tests/test_basic.py > test_output.log 2>&1 || (tail -200 test_output.log && exit 1)
+        cat test_output.log
     
     - name: Run quick simulation
       run: |
-        python run.py --steps 5
+        python run.py --steps 5 --populationscale tiny > simulation_output.log 2>&1 || (tail -200 simulation_output.log && exit 1)
+        cat simulation_output.log
+
+    - name: Run scenario smoke simulations
+      run: |
+        python run.py --steps 20 --populationscale tiny --seed 101 > scenario_base.log 2>&1 || (tail -200 scenario_base.log && exit 1)
+        cat scenario_base.log
+
+        python run.py --steps 20 --populationscale tiny --seed 102 --enablereproduction --enablesexualselection > scenario_reproduction.log 2>&1 || (tail -200 scenario_reproduction.log && exit 1)
+        cat scenario_reproduction.log
+
+        python run.py --steps 20 --populationscale tiny --seed 103 --enableculturaltransmission --enableguilt --enableostracism --enablefermiupdate > scenario_culture_institutions.log 2>&1 || (tail -200 scenario_culture_institutions.log && exit 1)
+        cat scenario_culture_institutions.log
+
+        python run.py --steps 20 --populationscale tiny --seed 104 --interactiontopology watts_strogatz --topologyk 4 --topologyp 0.2 > scenario_topology.log 2>&1 || (tail -200 scenario_topology.log && exit 1)
+        cat scenario_topology.log
+
+    - name: Run prosocial vs dark-triad comparison
+      run: |
+        python compare_moral_bias.py > moral_bias_comparison.log 2>&1 || (tail -240 moral_bias_comparison.log && exit 1)
+        cat moral_bias_comparison.log
+
+    - name: Run profile society simulations
+      if: matrix.python-version == '3.12'
+      run: |
+        python run_profile_societies.py > profile_society_runs.log 2>&1 || (tail -240 profile_society_runs.log && exit 1)
+        cat profile_society_runs.log
+
+    - name: Upload profile society results
+      if: matrix.python-version == '3.12'
+      uses: actions/upload-artifact@v4
+      with:
+        name: profile-society-results
+        path: |
+          profile_society_runs.log
+          simulation_results/profile_societies/
