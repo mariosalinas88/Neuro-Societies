@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 
-from model_simple import PsychNeuroSociety
+from model_asperger import PsychNeuroSociety
 
 
 def main() -> None:
