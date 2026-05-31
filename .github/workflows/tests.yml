@@ -60,3 +60,18 @@ jobs:
       run: |
         python compare_moral_bias.py > moral_bias_comparison.log 2>&1 || (tail -240 moral_bias_comparison.log && exit 1)
         cat moral_bias_comparison.log
+
+    - name: Run profile society simulations
+      if: matrix.python-version == '3.12'
+      run: |
+        python run_profile_societies.py > profile_society_runs.log 2>&1 || (tail -240 profile_society_runs.log && exit 1)
+        cat profile_society_runs.log
+
+    - name: Upload profile society results
+      if: matrix.python-version == '3.12'
+      uses: actions/upload-artifact@v4
+      with:
+        name: profile-society-results
+        path: |
+          profile_society_runs.log
+          simulation_results/profile_societies/
