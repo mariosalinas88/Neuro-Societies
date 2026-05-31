@@ -41,3 +41,17 @@ jobs:
       run: |
         python run.py --steps 5 --populationscale tiny > simulation_output.log 2>&1 || (tail -200 simulation_output.log && exit 1)
         cat simulation_output.log
+
+    - name: Run scenario smoke simulations
+      run: |
+        python run.py --steps 20 --populationscale tiny --seed 101 > scenario_base.log 2>&1 || (tail -200 scenario_base.log && exit 1)
+        cat scenario_base.log
+
+        python run.py --steps 20 --populationscale tiny --seed 102 --enablereproduction --enablesexualselection > scenario_reproduction.log 2>&1 || (tail -200 scenario_reproduction.log && exit 1)
+        cat scenario_reproduction.log
+
+        python run.py --steps 20 --populationscale tiny --seed 103 --enableculturaltransmission --enableguilt --enableostracism --enablefermiupdate > scenario_culture_institutions.log 2>&1 || (tail -200 scenario_culture_institutions.log && exit 1)
+        cat scenario_culture_institutions.log
+
+        python run.py --steps 20 --populationscale tiny --seed 104 --interactiontopology watts_strogatz --topologyk 4 --topologyp 0.2 > scenario_topology.log 2>&1 || (tail -200 scenario_topology.log && exit 1)
+        cat scenario_topology.log
