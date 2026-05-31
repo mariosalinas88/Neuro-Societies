@@ -7,7 +7,7 @@ import random
 from collections import Counter, defaultdict
 from typing import Dict, List
 
-from model_asperger import PsychNeuroSociety
+from model_asperger import PsychNeuroSociety, sample_profile_traits
 
 
 def run_once(prosocial_count: int, dark_count: int, seed: int, steps: int) -> Dict[str, object]:
@@ -27,15 +27,14 @@ def run_once(prosocial_count: int, dark_count: int, seed: int, steps: int) -> Di
     )
 
     # Force the exact requested ratio because weighted random sampling can deviate in tiny populations.
+    # Important: re-sample through sample_profile_traits so biological_bias and spectrum_ranges are preserved.
     for idx, agent in enumerate(model.agents):
         if idx < prosocial_count:
             agent.profile_id = "9"
-            traits = model.profiles["9"]["traits"]
-            agent.traits = dict(traits)
+            agent.traits = sample_profile_traits(model.rng, model.profiles["9"])
         else:
             agent.profile_id = "10"
-            traits = model.profiles["10"]["traits"]
-            agent.traits = dict(traits)
+            agent.traits = sample_profile_traits(model.rng, model.profiles["10"])
 
     history = model.run(steps)
     last = history.iloc[-1].to_dict() if not history.empty else {}
