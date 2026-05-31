@@ -55,3 +55,8 @@ jobs:
 
         python run.py --steps 20 --populationscale tiny --seed 104 --interactiontopology watts_strogatz --topologyk 4 --topologyp 0.2 > scenario_topology.log 2>&1 || (tail -200 scenario_topology.log && exit 1)
         cat scenario_topology.log
+
+    - name: Run prosocial vs dark-triad comparison
+      run: |
+        python compare_moral_bias.py > moral_bias_comparison.log 2>&1 || (tail -240 moral_bias_comparison.log && exit 1)
+        cat moral_bias_comparison.log
