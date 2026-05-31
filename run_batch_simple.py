@@ -4,16 +4,16 @@ import csv
 import os
 from typing import Dict, List
 
-from model_simple import PsychNeuroSociety
+from model_asperger import PsychNeuroSociety
 
 
 SCENARIOS: List[Dict[str, object]] = [
     {"name": "all_neutral", "profiles": [("1", 1.0)], "notes": "Control profile only"},
-    {"name": "nt_adhd_autism", "profiles": [("1", 0.4), ("2", 0.3), ("3", 0.3)], "notes": "Mixed neutral, ADHD, autism-like profiles"},
+    {"name": "nt_adhd_asperger", "profiles": [("1", 0.4), ("2", 0.3), ("3", 0.3)], "notes": "Mixed neutral, ADHD, Asperger profiles"},
     {"name": "high_reasoning_prosocial", "profiles": [("3", 0.5), ("11", 0.5)], "notes": "High reasoning and prosocial profile mix"},
-    {"name": "high_reasoning_dark", "profiles": [("3", 0.4), ("10", 0.6)], "notes": "High reasoning under dark/dominance pressure"},
+    {"name": "high_reasoning_dark", "profiles": [("3", 0.4), ("10", 0.6)], "notes": "Asperger/high reasoning under dark/dominance pressure"},
     {"name": "low_resilience_mix", "profiles": [("2", 0.3), ("12", 0.4), ("7", 0.3)], "notes": "Low resilience and competitive vulnerability"},
-    {"name": "inclusive_nd_mix", "profiles": [("3", 0.3), ("2", 0.3), ("6", 0.4)], "notes": "Neurodiverse mix with social/cooperative potential"},
+    {"name": "inclusive_nd_mix", "profiles": [("3", 0.3), ("2", 0.3), ("6", 0.4)], "notes": "Neurodiverse mix with Asperger, ADHD and HSP cooperative potential"},
 ]
 
 
